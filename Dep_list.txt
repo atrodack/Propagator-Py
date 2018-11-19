@@ -1,0 +1,14 @@
+numpy
+scipy
+astropy
+numba
+
+
+
+
+commands:
+conda install -c anaconda numpy
+conda install -c anaconda scipy
+conda install -c anaconda astropy
+conda install -c numba/label/dev numba
+
