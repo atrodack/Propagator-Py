@@ -2,7 +2,7 @@ numpy
 scipy
 astropy
 numba
-
+cudatoolkit
 
 
 
@@ -11,4 +11,4 @@ conda install -c anaconda numpy
 conda install -c anaconda scipy
 conda install -c anaconda astropy
 conda install -c numba/label/dev numba
-
+conda install cudatoolkit=9.0

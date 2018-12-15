@@ -8,11 +8,10 @@ Created on Thu Nov  8 13:17:59 2018
 
 import matplotlib.pyplot as plt
 import numpy as np
-import FITS_Utils as fits
+from PyPropUtils import FITS_Utils as fits
 from scipy.signal import convolve as conv
 from scipy.interpolate import interp2d
 import numba
-from numba import jit
 
 def myfft2D(g,dx):
     return np.fft.fftshift(np.fft.fft2(np.fft.fftshift(g)))*(dx*dx)
@@ -103,7 +102,7 @@ dataType = 'float32';
 
 
 # Load a Pupil Mask
-A = fits.FITS_Utils.simple_fitsread('vAPP_512/MagAO-X_pupil_512.fits');
+A = fits.simple_fitsread('vAPP_512/MagAO-X_pupil_512.fits');
 
 # Pixel Values
 N = np.size(A,1);
@@ -178,4 +177,4 @@ F_FP, x2d = ConvFresnel2D(F_lens,x2d,diam+200,imd,B3)
 
 plt.figure()
 plt.imshow(np.abs(F_FP))
-fits.FITS_Utils.simple_fitswrite(np.abs(F_FP),'amp_F_FP_4f.fits')
+fits.simple_fitswrite(np.abs(F_FP),'amp_F_FP_4f.fits')
