@@ -15,6 +15,7 @@ from scipy.interpolate import interp2d
 from PyPropUtils import Propagation_Utils as prop
 import OptElement
 
+
 # params is a dict of parameters for the field
 #params = dict()
 #params['name'] = conf.F13paramslist['name1']
@@ -110,7 +111,7 @@ class Field():
         self.defaultDatatype = datatype
         return
     
-    def setGrid(self, grid_, amp_=None):
+    def setGrid(self, grid_=None, amp_=None):
         if (grid_ is None and amp_ is None):
             self.grid_ = np.ones(shape=(self.params['gridsizeX'],self.params['gridsizeY']),dtype=self.params['dtype'])
         elif (grid_ is None and amp_ is not None):
@@ -199,8 +200,7 @@ class Field():
             
         nx = x.shape[0]
         dx = x[1] - x[0]
-#        diam = (x[-1] - x[0])*(1 + 1/(nx - 1))
-        diam = self.params['beamD']
+        diam = (x[-1] - x[0])*(1 + 1/(nx - 1))
         assert diam > 0
         assert dx > 0
         return([dx, diam])
@@ -522,6 +522,37 @@ class Field():
                 field_ *= sz[1]*sz[0]*tiltphase
             else:
                 field_ = prop.fft2_fwd(self.grid_ * tiltphase, (pscale*pscale))
+            
+        self.setGrid(field_)
+        self.WFReIm2AmpPhase()
+        self.grid_ = self.ampGrid_ * np.exp(1j * self.phaseGrid_)
+        self.changePlane()
+               
+        return
+    
+    def FraunhoferPropWF_GPU(self, pscale, direction=1, tiltphase=1.):
+        sz = self.grid_.shape
+        nx = self.grid_.size
+        
+        if len(sz) == 2:
+            sz = (sz[0], sz[1], 1)
+            
+        field_ = np.zeros(shape=sz, dtype=self.defaultDatatype)
+#        self.move2PrevGrid_(self.grid_)
+        if sz[2]>1:
+            for i in range(sz[2]):
+                if direction == -1:
+                    field_[:,:,i] = prop.cufft2_back(self.grid_[:,:,i], (pscale*pscale*nx)**-1)
+                    field_[:,:,i] *= sz[1]*sz[0]*tiltphase
+                else:
+                    field_[:,:,i] = prop.cufft2_fwd(self.grid_[:,:,i] * tiltphase, (pscale*pscale))
+            
+        elif sz[2]==1:
+            if direction == -1:
+                field_ = prop.cufft2_back(self.grid_, (pscale*pscale*nx)**-1)
+                field_ *= sz[1]*sz[0]*tiltphase
+            else:
+                field_ = prop.cufft2_fwd(self.grid_ * tiltphase, (pscale*pscale))
             
         self.setGrid(field_)
         self.WFReIm2AmpPhase()

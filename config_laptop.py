@@ -59,6 +59,7 @@ F13paramslist['n0'] = 1.
 F13paramslist['lambda0'] = 0.550
 F13paramslist['bandwidth'] = 0.2
 F13paramslist['max_chirp_step_deg'] = 90
+F13paramslist['useGPU'] = True
 
 # RTFA Config
 F13paramslist['u_star'] = 10**5

@@ -14,6 +14,7 @@ from scipy.interpolate import interp1d, interp2d
 from scipy.special import gamma
 from astropy.io import fits
 import matplotlib.pyplot as plt
+from PyPropCUDA import PyPropCUDA as cuda
 
 
 
@@ -31,7 +32,7 @@ class FITS_Utils:
         return
         
 class Plot_Utils:
-    def ezimshow(A, fignum, xlabel_ = None, ylabel_ = None, title_ = None, origin_='lower',cmap_='gray', ):
+    def ezimshow(A, fignum=1, xlabel_ = None, ylabel_ = None, title_ = None, origin_='lower',cmap_='gray', ):
         fig = plt.figure(fignum)
         fig.clf()
         plt.imshow(A,cmap=cmap_, origin=origin_,)
@@ -70,6 +71,12 @@ class Propagation_Utils:
     
     def fft2_back(x,scale):
         return np.fft.ifftshift(np.fft.ifft2(np.fft.ifftshift(x)))*scale
+    
+    def cufft2_fwd(x,scale, stream=0):
+        return cuda.cuFFT_v2(x,out=None, stream=stream)*scale
+    
+    def cufft2_back(x,scale, stream=0):
+        return cuda.cuIFFT_v2(x, out=None, stream=stream)*scale
     
 
 class General_Utils:
