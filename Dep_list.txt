@@ -3,7 +3,7 @@ scipy
 astropy
 numba
 cudatoolkit
-
+accelerate
 
 
 commands:
@@ -12,3 +12,4 @@ conda install -c anaconda scipy
 conda install -c anaconda astropy
 conda install -c numba/label/dev numba
 conda install cudatoolkit=9.0
+conda install accelerate

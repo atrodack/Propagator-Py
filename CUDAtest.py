@@ -92,7 +92,7 @@ else:
     print('double to double complex fail')
 
 
-N = 2**13
+N = 2**12
 x = np.arange(-N/2, N/2, 1)
 X,Y = np.meshgrid(x,x)
 R = np.sqrt(X*X + Y*Y)
